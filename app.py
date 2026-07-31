@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 """정보처리산업기사 핵심요약 퀴즈 (Streamlit + SQLite)"""
+import os
 import random
 
 import streamlit as st
 
+import build_db
 import db
+
+if not os.path.exists(db.DB_PATH):
+    build_db.main()
 
 st.set_page_config(page_title="정보처리산업기사 핵심요약 퀴즈", page_icon="📝", layout="centered")
 
