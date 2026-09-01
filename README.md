@@ -43,6 +43,27 @@ quiz_app/
 └── requirements.txt
 ```
 
+## 트러블슈팅
+
+**Streamlit Cloud에 배포하면 문제은행이 비어 보이거나 갱신이 안 됨**
+
+- 원인: 빌드 결과물인 `data/quiz.db`(SQLite DB 파일)와 `__pycache__/*.pyc`를 **저장소에 그대로
+  커밋**해뒀었음. 로컬에서는 이미 있는 DB를 계속 쓰니 문제없어 보였지만, 배포 환경에서는 이
+  스냅샷이 그대로 올라가서 `questions.csv`를 갱신해도 실제 서비스되는 DB는 옛날 그대로였음.
+- 해결: `quiz.db`/`__pycache__`를 저장소에서 빼고(`.gitignore`에 추가), 앱 시작 시 DB 파일이
+  없으면 CSV로부터 자동으로 빌드하도록 변경.
+
+```diff
++ import os
+  import random
+  import streamlit as st
++ import build_db
+  import db
+
++ if not os.path.exists(db.DB_PATH):
++     build_db.main()
+```
+
 ---
 
 🤖 이 저장소의 README는 Claude Code와 함께 작성했어요.
